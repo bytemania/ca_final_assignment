@@ -1,0 +1,12 @@
+\clearpage
+\section{Method}
+
+\subsection{Participants}
+
+\subsection{Materials (Optional)}
+
+\subsection{Design (Optional)}
+
+\subsection{Procedure}
+
+\subsection{Scoring (Optional)}

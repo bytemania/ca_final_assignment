@@ -1,0 +1,46 @@
+---
+title: "MATH 9102 - Probability and Statistical Inference Assignment \\ Final Assignment"
+author: "Antonio Silva (D23129331@mytudublin.ie)"
+date: "2024-05-26"
+output:
+  pdf_document:
+    extra_dependencies: ['amsmath']
+    toc: true
+    toc_depth: 2
+    includes:
+      in_header: preamble.tex
+---
+
+```{r child = 'sections/setup.Rmd'}
+```
+
+```{r child = 'sections/abstract.Rmd'}
+```
+
+```{r child = 'sections/introduction.Rmd'}
+```
+
+```{r child = 'sections/method.Rmd'}
+```
+
+```{r child = 'sections/results.Rmd'}
+```
+
+```{r child = 'sections/discussion.Rmd'}
+```
+
+```{r child = 'sections/references.Rmd'}
+```
+
+```{r child = 'sections/appendix.Rmd'}
+```
+
+
+
+
+
+
+
+
+
+
