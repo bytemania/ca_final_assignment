@@ -13,13 +13,13 @@ output:
 
 ```{r child = 'sections/setup.Rmd'}
 ```
-
+<!--
 ```{r child = 'sections/abstract.Rmd'}
 ```
-
+-->
 ```{r child = 'sections/introduction.Rmd'}
 ```
-
+<!--
 ```{r child = 'sections/method.Rmd'}
 ```
 
@@ -34,8 +34,11 @@ output:
 
 ```{r child = 'sections/appendix.Rmd'}
 ```
+-->
 
-
+<!--
+https://discoveringstatistics.com/docs/writinglabreports.pdf
+-->
 
 
 

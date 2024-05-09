@@ -1,2 +1,22 @@
 \clearpage
 \section{Introduction}
+
+An introduction should answer these questions in a few pages:
+
+Why is this problem important?
+
+How does this study relate to previous work in the area?
+
+What are the primary and secondary hypotheses and objectives of the study?
+
+How do the hypotheses and research design relate to one another?
+
+What are the theoretical and practical implications of the study?
+
+This section should not get a primary heading (i.e., "Introduction"), you simply re-write the
+title at the top
+
+
+
+
+
