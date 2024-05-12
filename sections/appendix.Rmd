@@ -1,2 +1,114 @@
 \clearpage
-\section{Appendix (Optional)}
+\section{Appendix}
+
+\subsection{Statistics Description}
+
+```{r, echo=TRUE}
+feat_desc_num <- function(variable_name, binwidth = 5) {
+  summary_stats <- census %>%
+    group_by(income) %>%
+    summarise(count = n(),
+              mean = mean(!!sym(variable_name), na.rm = TRUE),
+              median = median(age, na.rm = TRUE),
+              min = min(!!sym(variable_name)),
+              max = max(!!sym(variable_name), na.rm = TRUE),
+              kurtosis = kurtosis(!!sym(variable_name), na.rm = TRUE),
+              skewness = skewness(!!sym(variable_name), na.rm = TRUE),
+              .groups = "drop") %>%
+    ungroup()
+  
+  g <- ggplot(census, aes(x = !!sym(variable_name), fill = income)) +
+       geom_histogram(binwidth = binwidth, position = "dodge", alpha = 0.7) + 
+       theme_minimal() +
+       labs(title = paste("Frequency of income by ", variable_name)) + 
+       theme(plot.title = element_text(hjust = 0.5)) 
+  
+  grid.draw(g)  
+  kable(summary_stats, "latex")
+}
+
+feat_desc_cat <- function(variable_name, render_table = TRUE) {
+  summary_stats <- census %>%
+    group_by(!!sym(variable_name), income) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(proportion = count / sum(count)) %>%
+    ungroup()  %>%
+    mutate(percent = scales::percent(proportion, 1)) 
+  
+  g <- ggplot(summary_stats, aes(x = !!sym(variable_name), y = proportion, fill = income)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    theme_minimal() +
+    labs(title = paste("Proportion of income by ", variable_name)) + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  
+  grid.draw(g)  
+  if (render_table) {
+    kable(summary_stats, "latex")
+  }
+}
+```
+
+```{r, echo=TRUE}
+feat_desc_num('age')
+```
+
+```{r, echo=TRUE}
+feat_desc_num('fnlwgt', 100000)
+```
+
+```{r, echo=TRUE}
+feat_desc_num('education.num', 1)
+```
+
+```{r, echo=TRUE}
+feat_desc_num('capital.gain', 10000)
+```
+
+```{r, echo=TRUE}
+feat_desc_num('capital.loss', 500)
+```
+
+```{r, echo=TRUE}
+feat_desc_num('hours.per.week', 3)
+```
+
+
+sex
+
+```{r, echo=TRUE}
+feat_desc_cat('sex')
+```
+
+workclass
+```{r, echo=TRUE}
+feat_desc_cat('workclass')
+```
+
+education
+```{r, echo=TRUE}
+feat_desc_cat('education')
+```
+
+```{r, echo=TRUE}
+feat_desc_cat('marital.status')
+```
+
+```{r, echo=TRUE}
+feat_desc_cat('occupation')
+```
+relationship
+
+```{r, echo=TRUE}
+feat_desc_cat('relationship')
+```
+
+```{r, echo=TRUE}
+feat_desc_cat('relationship')
+```
+
+```{r, echo=TRUE}
+feat_desc_cat('native.country', FALSE)
+```
+
+

@@ -1,44 +1,24 @@
 \clearpage
 \section{Abstract}
 
-What is the study all about (in no more than about 150-250 words). Abstracts provide a reader with the most
-important details. Ideally, the abstract enables the reader to decide whether he or she should read the article.
-Again, never promise more than can be given. Not everyone is going to be interested in the work; but that
-does not mean the writer should not point out some of the most intriguing features of the study. The abstract
-should not be composed of selected sentences from the body of the paper. Instead, the writer should sit
-down and try to distil the essential elements of the work to be reported. The abstract is extremely important;
-it should not be short-changed. It should be written last. This paragraph should concisely describe the
-problem under investigation and the motivation for the study, the participants, the experimental method,
-findings, and conclusions. You could try to write a sentence on each of these areas. To conserve characters
-in the abstract, type all numbers except those that begin a sentence as digits. Avoid ending the abstract with
-throw-away and uninformative statements such as ‘These results will be discussed’, or ‘how these results
-relate to past theory will be discussed’.
+This study examines the impact of gender on salaries in the U.S. in 1996, 
+utilizing a dataset derived from census data comprising 32,561 observations. 
+The dataset includes variables such as age, work classification, educational 
+attainment, marital status, race, and gender, allowing for a detailed analysis 
+of factors influencing income levels. Our primary objective is to identify the 
+determinants that contribute to individuals earning more than $50,000 annually,
+with a particular focus on gender disparities.
 
-ü Ugly (1993) has shown that the propensity to misclassify members of the opposite sex as attractive
-is increased in nightclub settings. This study was designed to ascertain whether this effect is due to
-the dim lighting employed in these venues, or the consumption of alcohol in this setting. Ratings of
-the attractiveness of a set of stooge participants were taken in both a well-lit and dimly-lit nightclub
-by both sober and drunk participants. A 2-way ANOVA revealed a significant effect of alcohol
-consumption, but not of the lighting used. The results suggest that, contrary to Ugly’s hypothesis,
-dim lighting does not contribute to the inflated attractiveness of opposite-gender mates; instead
-these ratings are influenced solely by alcohol intake.
+By applying statistical methods to analyze the data, this research aims to 
+uncover patterns and relationships between demographic categories and income. 
+The findings are expected to provide insights into the sociological aspects of 
+wage inequality and the role gender plays within this dynamic. Furthermore, the
+results will contribute to a better understanding of how different demographic
+factors interact to influence economic outcomes in the United States.
 
-
-
-APey-Ape: Abstract
-A good abstract is:
-
-Accurate: it should convey the purpose and content of the study accurately. It
-should cover the main areas of the report (e.g., rationale, methods, results,
-implications).
-
-Nonevaluative: report what is in the manuscript; do not evaluate it.
-
-Coherent and readable: use verbs rather than nouns, use the active rather than the
-passive voice, use the past tense to describe what was done, but the present tense
-to describe results or conclusions drawn.
-
-Concise: be brief and avoid superfluous statements/words.
-“Word limits vary from journal to journal and typically range from 150 to 250 words.”
-
+The implications of this study are significant, offering a robust foundation 
+for future research and policy formulation aimed at addressing wage 
+disparities. By elucidating the factors that contribute to income inequality, 
+particularly the impact of gender, this research helps inform strategies to
+promote economic equity and fairness in the labor market.
 

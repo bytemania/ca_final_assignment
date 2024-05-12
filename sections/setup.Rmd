@@ -4,11 +4,51 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 
 ```{r, echo = FALSE}
-needed_packages <- c("papaja")                      
-not_installed <- needed_packages[!(needed_packages %in% installed.packages()[ , "Package"])]    
+if (!requireNamespace("papaja", quietly = TRUE)) {
+  install.packages("papaja", repos ="http://cran.us.r-project.org")
+}
 
-if(length(not_installed)) 
-  install.packages(not_installed, repos ="http://cran.us.r-project.org") 
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr", repos ="http://cran.us.r-project.org")
+}
 
-library(papaja)
+if (!requireNamespace("tidyr", quietly = TRUE)) {
+  install.packages("tidyr", repos ="http://cran.us.r-project.org")
+}
+
+
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("rlang", quietly = TRUE)) {
+  install.packages("rlang", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("knitr", quietly = TRUE)) {
+  install.packages("knitr", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("grid", quietly = TRUE)) {
+  install.packages("grid", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("e1071", quietly = TRUE)) {
+  install.packages("e1071", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("moments", quietly = TRUE)) {
+  install.packages("moments", repos ="http://cran.us.r-project.org")
+}
+
+
+library(papaja) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(rlang)
+library(knitr)
+library(grid)
+library(e1071)
+library(moments)
 ```

@@ -3,10 +3,100 @@
 
 \subsection{Participants}
 
-\subsection{Materials (Optional)}
+The dataset~\parencite[]{uci94census} for this study originates from the 
+1994 U.S. Census, which 
+involved a diverse range of participants to provide a comprehensive snapshot 
+of the U.S. population. This extensive coverage makes the findings relevant to 
+the adult population of the United States during that period.
 
-\subsection{Design (Optional)}
+The data captures key demographic details critical for examining income 
+disparities, including age, gender, race/ethnicity, education level, 
+marital status, and employment status. 
+Specifically, it categorizes gender into male or female; race/ethnicity 
+includes White, Black, Asian, Hispanic, among others; and education 
+levels vary from none to advanced degrees.
+
+The census participants were not specifically recruited like in targeted 
+research studies but were included through a national initiative aimed at 
+documenting the demographic attributes of the U.S. population. Participation
+was solicited from households nationwide, covering both urban and rural areas
+to ensure a representative sample.
+
+Although the census gathered data from millions, this study analyzes a subset
+of 32,561 complete records, chosen for their comprehensive demographic details
+needed to study income variations. No power analysis was conducted as the 
+census was designed to encompass as broad a population segment as possible, not 
+to meet specific sample size calculations for statistical power.
+
+The data was gathered specifically to analyze the earned income of the 
+population, and the collection was conducted according to the following 
+criteria:
+\begin{description}
+\item[AAGE > 16] Keep only working-age adults;
+\item[AGI > 100] Adjusted Gross Income;
+\item[AFNLWGT > 1] Final Weight meaning the number of people that is believed
+                   that this entry represents;
+\item[HRSWK > 0] Participants with working hours reported.
+\end{description}
+
+The dataset comes in comma-separated values (CSV) format has \emph{14 features}
+and has 0.9\% missing values. The target variable is the \emph{income} that 
+can be either \emph{more} or \emph{less or equal} than \$50000.
+
+Due to the census's scope, there was no allocation of participants into 
+experimental groups or need for randomization typical of controlled 
+experiments. The dataset naturally includes a broad demographic diversity 
+reflective of the national census effort.
 
 \subsection{Procedure}
+
+\subsubsection{Hypothesis}
+
+As an initial analysis, we aim to explore how social factors such as gender
+and race affect income levels. We want to understand if a specific gender 
+is more likely to earn more.
+
+We also intend to investigate how other factors interact with gender. One 
+interesting analysis could be to examine how ethnic groups might experience
+advantages or disadvantages combined with gender in terms of income disparity.
+
+Another intriguing hypothesis would consider the income progression 
+influenced by combinations of age and gender.
+
+\subsubsection{Exploration}
+
+\subsubsection{Features Description}
+
+First, we need to conduct a thorough exploration of the dataset to understand
+the underlying structure and quality of the data. This will involve assessing 
+various features for their relevance and potential impact on the 
+study's outcomes, particularly how they relate to income levels.
+We will also present a summary in Table X.
+
+```{r, echo=TRUE}
+census <- read.csv("../adult.csv", na.strings =  c("?"))
+head(census)
+```
+
+
+
+```{r, echo=TRUE}
+missing_values <- census %>% summarise(across(everything(), ~sum(is.na(.))))
+missing_values_ft <- missing_values %>%
+  pivot_longer(cols = everything(), names_to = "Feature", values_to = "MissingValues")
+
+ggplot(missing_values_ft, aes(x = Feature, y = MissingValues, fill = Feature)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Missing Values Per Feature", x = "Feature", y = "Missing Values") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+We get the following resume for the categories:
+
+
+
+
 
 \subsection{Scoring (Optional)}
