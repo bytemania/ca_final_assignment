@@ -3,7 +3,7 @@
 
 \subsection{Participants}
 
-The dataset~\parencite[]{uci94census} for this study originates from the 
+The dataset\parencite[]{uci94census} for this study originates from the 
 1994 U.S. Census, which 
 involved a diverse range of participants to provide a comprehensive snapshot 
 of the U.S. population. This extensive coverage makes the findings relevant to 
