@@ -1,54 +1,48 @@
-```{r setup, include=FALSE} 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
 
+```{r, echo = FALSE, include = FALSE}
+if (!requireNamespace("knitr", quietly = TRUE)) {
+  install.packages("knitr", repos ="http://cran.us.r-project.org")
+}
 
-```{r, echo = FALSE}
-if (!requireNamespace("papaja", quietly = TRUE)) {
-  install.packages("papaja", repos ="http://cran.us.r-project.org")
+if (!requireNamespace("kableExtra", quietly = TRUE)) {
+  install.packages("kableExtra", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse", repos ="http://cran.us.r-project.org")
 }
 
 if (!requireNamespace("dplyr", quietly = TRUE)) {
   install.packages("dplyr", repos ="http://cran.us.r-project.org")
 }
 
-if (!requireNamespace("tidyr", quietly = TRUE)) {
-  install.packages("tidyr", repos ="http://cran.us.r-project.org")
-}
-
-
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
   install.packages("ggplot2", repos ="http://cran.us.r-project.org")
 }
 
-if (!requireNamespace("rlang", quietly = TRUE)) {
-  install.packages("rlang", repos ="http://cran.us.r-project.org")
+if (!requireNamespace("gridExtra", quietly = TRUE)) {
+  install.packages("gridExtra", repos ="http://cran.us.r-project.org")
 }
 
-if (!requireNamespace("knitr", quietly = TRUE)) {
-  install.packages("knitr", repos ="http://cran.us.r-project.org")
+if (!requireNamespace("corrplot", quietly = TRUE)) {
+  install.packages("corrplot", repos ="http://cran.us.r-project.org")
 }
 
-if (!requireNamespace("grid", quietly = TRUE)) {
-  install.packages("grid", repos ="http://cran.us.r-project.org")
-}
-
-if (!requireNamespace("e1071", quietly = TRUE)) {
-  install.packages("e1071", repos ="http://cran.us.r-project.org")
-}
-
-if (!requireNamespace("moments", quietly = TRUE)) {
-  install.packages("moments", repos ="http://cran.us.r-project.org")
-}
-
-
-library(papaja) 
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(rlang)
 library(knitr)
-library(grid)
-library(e1071)
-library(moments)
+library(kableExtra)
+
+library(psych)
+
+library(tidyverse)
+library(dplyr)
+
+library(ggplot2)
+library(gridExtra)
+
+library(corrplot)
 ```
+
+```{r setup, include=FALSE} 
+opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+

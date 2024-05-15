@@ -1,102 +1,280 @@
-\clearpage
-\section{Method}
+# Method
 
-\subsection{Participants}
+## Participants
 
-The dataset\parencite[]{uci94census} for this study originates from the 
-1994 U.S. Census, which 
-involved a diverse range of participants to provide a comprehensive snapshot 
-of the U.S. population. This extensive coverage makes the findings relevant to 
-the adult population of the United States during that period.
+The Breast Cancer Wisconsin (Diagnostic) dataset includes data from patients
+who underwent fine needle aspirate (FNA) of breast masses. 
 
-The data captures key demographic details critical for examining income 
-disparities, including age, gender, race/ethnicity, education level, 
-marital status, and employment status. 
-Specifically, it categorizes gender into male or female; race/ethnicity 
-includes White, Black, Asian, Hispanic, among others; and education 
-levels vary from none to advanced degrees.
+The dataset consists of 569 instances with data collected from real 
+women.
 
-The census participants were not specifically recruited like in targeted 
-research studies but were included through a national initiative aimed at 
-documenting the demographic attributes of the U.S. population. Participation
-was solicited from households nationwide, covering both urban and rural areas
-to ensure a representative sample.
+The dataset does not provide personal demographic information such as 
+age, ethnicity, or geographic location, focusing instead on the clinical 
+and pathological features of the breast masses.
 
-Although the census gathered data from millions, this study analyzes a subset
-of 32,561 complete records, chosen for their comprehensive demographic details
-needed to study income variations. No power analysis was conducted as the 
-census was designed to encompass as broad a population segment as possible, not 
-to meet specific sample size calculations for statistical power.
+For each participant, 30 features were extracted from the FNA samples. These 
+features describe the characteristics of the cell nuclei present in the samples.
+The features include measurements such as radius, texture, perimeter, area, 
+smoothness, compactness, concavity, concave points, symmetry, and fractal 
+dimension.
+These features were recorded for both the mean, standard error, and "worst" or 
+largest values across the samples.
 
-The data was gathered specifically to analyze the earned income of the 
-population, and the collection was conducted according to the following 
-criteria:
-\begin{description}
-\item[AAGE > 16] Keep only working-age adults;
-\item[AGI > 100] Adjusted Gross Income;
-\item[AFNLWGT > 1] Final Weight meaning the number of people that is believed
-                   that this entry represents;
-\item[HRSWK > 0] Participants with working hours reported.
-\end{description}
+Each sample is labeled with a diagnosis indicating whether the breast mass is 
+benign (B) or malignant (M).
+This binary outcome is used to train and test predictive models aimed at 
+diagnosing breast cancer.
 
-The dataset comes in comma-separated values (CSV) format has \emph{14 features}
-and has 0.9\% missing values. The target variable is the \emph{income} that 
-can be either \emph{more} or \emph{less or equal} than \$50000.
+## Procedure 
 
-Due to the census's scope, there was no allocation of participants into 
-experimental groups or need for randomization typical of controlled 
-experiments. The dataset naturally includes a broad demographic diversity 
-reflective of the national census effort.
+### Dataset Exploration & Analysis 
 
-\subsection{Procedure}
+The dataset includes the following features (variables):
+We do not have any variables related to the individual, except for the ID. 
+There is a categorical variable indicating whether the tumor is benign or 
+malignant. All other variables are numerical, and for each, the mean, 
+standard error, and worst value were measured during the exam.
 
-\subsubsection{Hypothesis}
+| Variable | Type | Description | 
+| ---------|------|-------------|
+| id       | Ordinal | Number of the patient |
+| diagnosis | Categorical | M = malignant, B = benign |
+| radius | Continuous | Mean of distances from center to points on the perimeter |
+| texture| Continuous | Standard deviation of gray-scale values |
+| perimeter | Continuous | |
+| area | Continuous | |
+| smoothness | Continuous | Local variation in radius lenghts |
+| compactness | Continuous | (perimeter ^ 2 / area - 1)|
+| concavity | Continuous | Severity of concave portions of the contour |
+| symmetry | Continuous | |
+| fractal_dimension| Continuous | "Coastline approximation" - 1
 
-As an initial analysis, we aim to explore how social factors such as gender
-and race affect income levels. We want to understand if a specific gender 
-is more likely to earn more.
-
-We also intend to investigate how other factors interact with gender. One 
-interesting analysis could be to examine how ethnic groups might experience
-advantages or disadvantages combined with gender in terms of income disparity.
-
-Another intriguing hypothesis would consider the income progression 
-influenced by combinations of age and gender.
-
-\subsubsection{Exploration}
-
-\subsubsection{Features Description}
-
-First, we need to conduct a thorough exploration of the dataset to understand
-the underlying structure and quality of the data. This will involve assessing 
-various features for their relevance and potential impact on the 
-study's outcomes, particularly how they relate to income levels.
-We will also present a summary in Table X.
 
 ```{r, echo=TRUE}
-census <- read.csv("../adult.csv", na.strings =  c("?"))
-head(census)
+data <- read.csv("data.csv")
+desc_data <- data %>% select(-X, -id)
+desc_data <- suppressWarnings(describe(desc_data))
+desc_data <- desc_data %>% mutate(across(where(is.numeric), round, 2))
+kable(desc_data, format = "latex", 
+      caption = "Descriptive Analysis of the dataset") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+```
+The descriptive analysis shown in Table 2 reveals the following observations:
+
+* Most features exhibit some degree of right skewness, indicating that extreme 
+values on the higher side are common;
+* The standard errors are relatively low compared to the mean values,
+suggesting that the measurements are fairly consistent; 
+* `area` and `radius` show high variability, which may be significant in 
+distinguishing between benign and malignant tumors.
+
+The next tables summarizes the counts of benign and malignant cases in
+the dataset:
+ 
+ * Benign: There are 357 cases where the tumor is classified as benign;
+ * Malignant: There are 212 cases where the tumor is classified as malignant.
+ 
+This imbalance could affect the performance of predicting model, 
+making it biased towards the more frequent class.
+
+```{r, echo=TRUE}
+diagnosis_table <- table(data$diagnosis) 
+names(diagnosis_table) <- c("Benign", "Malignant")
+kable(diagnosis_table, format = "latex", 
+      caption = "Tumors dataset classification", 
+      col.names=c("Classification", "Frequency"))
 ```
 
 
-
 ```{r, echo=TRUE}
-missing_values <- census %>% summarise(across(everything(), ~sum(is.na(.))))
-missing_values_ft <- missing_values %>%
-  pivot_longer(cols = everything(), names_to = "Feature", values_to = "MissingValues")
+data$diagnosis <- as.factor(data$diagnosis)
 
-ggplot(missing_values_ft, aes(x = Feature, y = MissingValues, fill = Feature)) +
-  geom_bar(stat = "identity") +
+plot_area <- ggplot(data, aes(x = diagnosis, y = area_mean, color = diagnosis)) +
+  geom_jitter(width = 0.2) + 
   theme_minimal() +
-  labs(title = "Missing Values Per Feature", x = "Feature", y = "Missing Values") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") + 
-  theme(plot.title = element_text(hjust = 0.5)) 
+  labs(title = "Area vs Diagnosis",
+       x = "Diagnosis",
+       y = "Area") +
+  scale_color_manual(values = c("B" = "blue", "M" = "red"), name = "Diagnosis") + 
+  theme(legend.position="none")
+
+plot_radius <- ggplot(data, aes(x = diagnosis, y = radius_mean, color = diagnosis)) +
+  geom_jitter(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Radius vs Diagnosis",
+       x = "Diagnosis",
+       y = "Radius") +
+  scale_color_manual(values = c("B" = "blue", "M" = "red"), 
+                     name = "Diagnosis",
+                     labels = c("Benign", "Malignant"))
+
+grid.arrange(plot_area, plot_radius, ncol = 2)
 ```
 
-We get the following resume for the categories:
+Both area and radius are useful features for distinguishing between benign 
+and malignant tumors. The scatterplots show that malignant tumors tend to have 
+higher values for these features compared to benign tumors.
+
+In terms of data cleaning, there is no need to impute data as there are no
+missing values. Additionally, we do not need to address outliers because they
+are related to the diagnosis, and excluding them could negatively impact our 
+analysis.
+
+### Feature Selection
+
+Based on dataset we will select only the following variables.
+
+We will exclude all variables ending with `_se` and `_worst`. These variables 
+are highly correlated with their corresponding `_mean` values, reducing 
+their significance.
+
+For example: 
+
+* `area_worst` represents the _worst_ value for the area;
+* `area_se` represents the _standard error_ for the area;
+* `area_mean` represents the _mean_ for the area.
+
+So we believe that the `area_mean` is the most representative feature for the
+area.
+
+`diagnosis` will be our _dependent variable_.
+
+```{r, echo = TRUE}
+selected_features <- data %>% 
+  select(contains("_mean"))  %>%
+  rename_with(~ sub("_mean$", "", .))  %>%
+  rename_with(~ gsub("_", ".", .))
+ 
+corr_mt <- cor(selected_features)
+
+corr_mt_formatted <- as.data.frame(corr_mt) %>%
+  mutate(across(where(is.numeric), function(x){
+    n <- round(x, 2)
+    highly_correlated <- abs(x) > 0.9 
+    high_correlated <- abs(x) > 0.8
+    cell_spec(n,
+                 format = "latex",
+                 color = ifelse(highly_correlated, "red", 
+                                ifelse(high_correlated, "blue", "black")),
+                 bold = ifelse(highly_correlated | high_correlated, T, F))
+  }))
+  
+kable(corr_mt_formatted, format = "latex", escape = FALSE, 
+      caption = "Correlation Matrix for Selected Features") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+corrplot(corr_mt, type = "upper", 
+         title = "Correlation Matrix of Selected Features", 
+         mar = c(0, 0, 2, 0))
+```
+
+By the correlation matrix and plot we can conclude:
+
+* There is a _Very High Correlation_ (0.9+) between `area`, `perimeter` and `radius`;
+* There is also a _Very High Correlation_ (0.9+) between `concavity` and `concave.points`;
+* There is _High Correlation_ (0.8+) between `concavity`, `concave.points`, 
+`compactness`, `area`, `perimeter` and `radius`.
+
+Based on the previous correlation matrix we will discard all the
+features with correlation
+bigger than 0.9 between them. So we will:
+
+* Keep the feature `area` and discard `perimeter` and `radius`;
+* Keep the feature `concavity` and discard `concave.points`.
+
+Our final selected features are:
+
+* diagnosis (target/dependent variable);
+* area;
+* texture;
+* smoothness;
+* compactness;
+* concavity;
+* symmetry;
+* fractal.dimension.
+
+### PCA
+
+Before applying PCA, it is essential to select the predictor variables and 
+scale them. This step is important because PCA assumes that the data is 
+normally distributed and is sensitive to the variance of the
+variables. Standardizing the data ensures that each variable contributes
+equally to the analysis and that the results are not dominated by variables 
+with higher variance. 
+Luckily we can do it using the `center` and `scale.` parameter from the 
+`prcomp` (Principal Components Analysis) function.
+
+
+```{r, echo=TRUE}
+pca_selected <-  data %>% 
+  select(contains("_mean")) %>%
+  rename_with(~ sub("_mean$", "", .))  %>%
+  rename_with(~ gsub("_", ".", .)) %>%
+  select(-c("perimeter", "radius", "concave.points"))
+
+pca <- prcomp(pca_selected, center = TRUE, scale. = TRUE)
+
+summary(pca)
+
+library(factoextra)
+
+eig.val <- get_eigenvalue(pca)
+print(eig.val)
+
+fviz_eig(pca, addlabels = TRUE)
+
+vars = get_pca_var(pca)
+corrplot(vars$cos2)
+
+fviz_cos2(pca, choice = "var", axes=1:3)
+
+fviz_pca_var(pca, col.var = "cos2", 
+             gradient.cols = c("red", "blue", "green"), 
+             repel = TRUE)
+```
 
 
 
 
 
-\subsection{Scoring (Optional)}
+
+
+```{r, echo=TRUE}
+
+selected_features <- data %>%
+  select(radius_mean, texture_mean, smoothness_mean,
+         compactness_mean, concavity_mean,  symmetry_mean)
+
+# Standardize the data (excluding the diagnosis column)
+standardized_data <- scale(selected_features)
+
+# Perform PCA
+pca_result <- prcomp(standardized_data, center = TRUE, scale. = TRUE)
+
+# Summary of PCA results
+summary(pca_result)
+
+# View the proportion of variance explained by each principal component
+pca_result$sdev^2 / sum(pca_result$sdev^2)
+
+# Plot the variance explained by each principal component
+screeplot(pca_result, type = "lines", main = "Scree Plot")
+
+```
+
+
+### Target role
+
+### Hypotheses definition
+
+### Test logistic regression
+
+### Classification
+
+NEXT CHAPTER
+
+evaluation results
+
+conclusion
+
+

@@ -1,24 +1,27 @@
-\clearpage
-\section{Abstract}
+# Abstract
 
-This study examines the impact of gender on salaries in the U.S. in 1996, 
-utilizing a dataset derived from census data comprising 32,561 observations. 
-The dataset includes variables such as age, work classification, educational 
-attainment, marital status, race, and gender, allowing for a detailed analysis 
-of factors influencing income levels. Our primary objective is to identify the 
-determinants that contribute to individuals earning more than $50,000 annually,
-with a particular focus on gender disparities.
+Breast cancer is the most common cancer in women in developed countries,
+and 12% of breast cancer occurs in women 20-34 
+yearscite[@Hickey09:bc].
 
-By applying statistical methods to analyze the data, this research aims to 
-uncover patterns and relationships between demographic categories and income. 
-The findings are expected to provide insights into the sociological aspects of 
-wage inequality and the role gender plays within this dynamic. Furthermore, the
-results will contribute to a better understanding of how different demographic
-factors interact to influence economic outcomes in the United States.
+Advancements in prediction and diagnosis are crucial for maintaining a healthy 
+life. Accurate cancer prediction mechanisms are vital for improving patient 
+treatment and survival rates. Predictive techniques play a significant role 
+in the early diagnosis of breast cancer, allowing for timely intervention
+and better management of the disease. In this study, we focus on enhancing the
+accuracy of breast cancer predictions by employing advanced data analysis 
+techniques. Specifically, we utilized Principal Component Analysis (PCA) to 
+reduce the dataset's dimensionality. This step is essential as it helps to 
+simplify the dataset, making the predictive model more efficient and effective. 
+By reducing the number of variables, we can focus on the most significant 
+features that contribute to accurate predictions, thus improving the model's
+overall performance.
 
-The implications of this study are significant, offering a robust foundation 
-for future research and policy formulation aimed at addressing wage 
-disparities. By elucidating the factors that contribute to income inequality, 
-particularly the impact of gender, this research helps inform strategies to
-promote economic equity and fairness in the labor market.
-
+Additionally, we applied Logistic Regression to perform the prediction of the
+binary outcome (presence or absence of breast cancer). Logistic Regression 
+is well-suited for this task as it provides a clear probabilistic framework
+for binary classification problems. The dataset used for this analysis is the
+Breast Cancer Wisconsin (Diagnostic) datasetparencite[@UCI95:bc], 
+a well-known dataset in the field of medical diagnostics. We conducted our
+analysis and reporting using _R Studio, specifically version 4.3.2, 
+released on October 31, 2023_.
