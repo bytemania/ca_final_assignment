@@ -11,8 +11,6 @@ bibliography: references.bib
 biblio-style: "apa"
 ---
 
-
-
 ```{r child = 'sections/setup.Rmd'}
 ```
 
@@ -21,7 +19,6 @@ biblio-style: "apa"
 
 ```{r child = 'sections/introduction.Rmd'}
 ```
-
 
 ```{r child = 'sections/method.Rmd'}
 ```

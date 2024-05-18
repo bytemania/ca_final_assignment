@@ -36,6 +36,23 @@ if (!requireNamespace("factoextra", quietly = TRUE)) {
   install.packages("factoextra", repos ="http://cran.us.r-project.org")
 }
 
+if (!requireNamespace("stargazer", quietly = TRUE)) {
+  install.packages("stargazer", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("lmtest", quietly = TRUE)) {
+  install.packages("lmtest", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("caret", quietly = TRUE)) {
+  install.packages("caret", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("pROC", quietly = TRUE)) {
+  install.packages("pROC", repos ="http://cran.us.r-project.org")
+}
+
+
 library(knitr)
 library(kableExtra)
 
@@ -51,6 +68,10 @@ library(cowplot)
 library(corrplot)
 library(factoextra)
 
+library(stargazer)
+library(lmtest)
+library(caret)
+library(pROC)
 ```
 
 ```{r setup, include=FALSE} 

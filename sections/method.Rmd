@@ -314,7 +314,7 @@ do significantly predict cancer diagnosis.
 
 ```{r, echo = TRUE}
 model_data <- as.data.frame(pca$x[, 1:4])
-model_data$diagnosis <- data$diagnosis
+model_data$diagnosis <- ifelse(data$diagnosis == "M", 1, 0)
 
 kable(head(model_data), format = "latex", 
       caption = "Model data first rows") %>%
@@ -327,13 +327,41 @@ levels(model_data$diagnosis)
 
 ### Model
 
+```{r, echo = TRUE}
+model <- glm(diagnosis ~ ., data = model_data, family = binomial)
+summary(model)
 
+suppressWarnings(stargazer(model, type="text"))
+```
 
-### Model Resulta
+### Model Results
 
-### Hypotheses definition
+Likelihood Ratio Test of Nested Models
+```{r, echo = TRUE}
+lrtest(model)
+```
 
-### Test logistic regression
+confusion matrix
+93% accuracy
+
+```{r, echo = TRUE}
+predicted_probs <- predict(model, type = "response")
+predicted_classes <- ifelse(predicted_probs > 0.5, 1, 0)
+actual_classes <- ifelse(data$diagnosis == "M", 1, 0)
+
+confusion_matrix <- suppressWarnings(caret::confusionMatrix(factor(predicted_classes), factor(actual_classes), positive = "1"))
+print(confusion_matrix)
+```
+
+ROC Curve
+
+```{r, echo = TRUE}
+roc_curve <- roc(actual_classes, fitted(model))
+roc_obj <- plot(roc_curve, main="ROC Curve for Cancel Prediction", col="blue", 
+     print.auc = T, control = 0, case = 1, direction = "<")
+roc_obj
+```
+
 
 ### Classification
 
