@@ -214,56 +214,122 @@ pca_selected <-  data %>%
 
 pca <- prcomp(pca_selected, center = TRUE, scale. = TRUE)
 
-summary(pca)
+pca_summary <- summary(pca)
 
-library(factoextra)
+kable(pca_summary$importance, format = "latex", escape = FALSE, 
+      caption = "PCA Summary") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
 eig.val <- get_eigenvalue(pca)
-print(eig.val)
+kable(eig.val, format = "latex", escape = FALSE, 
+      caption = "Eigenvalues and variance") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
-fviz_eig(pca, addlabels = TRUE)
+screeplot <- fviz_eig(pca, addlabels = TRUE)
 
 vars = get_pca_var(pca)
 corrplot(vars$cos2)
 
-fviz_cos2(pca, choice = "var", axes=1:3)
 
-fviz_pca_var(pca, col.var = "cos2", 
+top_feature_contributors <- fviz_cos2(pca, choice = "var", axes=1:4)
+
+eigenvectors <- fviz_pca_var(pca, col.var = "cos2", 
              gradient.cols = c("red", "blue", "green"), 
              repel = TRUE)
+
+eigenvectors
+plot_grid(screeplot, top_feature_contributors)
 ```
 
 
+As we can see by the PCA Summary Table we saw that the first four components
+represents $\sim 92.2\%$ of the variance. is It a quite high value and we 
+reduce from 7 to 4 variables to use in our model later it's a $\sim 43\%$
+reduction of our initial features.
 
+The first four principal components together explain about 92.2\% of the total
+variance. This high percentage indicates that these components effectively
+summarize the majority of the variability in the dataset.
 
+Initially, we have 7 features. By using PCA, we 
+reduce this number to 4  principal components representing about 43\% decrease
+in the number of dimensions (features)
+$$
+Reduction\ Percentage = \frac{7 - 4}{7} = 0.4285714286 \approx 43.86\%
+$$
 
+Using fewer features (4 instead of 7) simplifies the model, making it
+easier to interpret and faster to compute retaining an high explanatory power.
 
+The eigenvectors and feature contributions plots reveal the following insights:
 
-```{r, echo=TRUE}
+- All features are positively correlated;
+- The most significant features for the first principal component are 
+compactness, concavity, symmetry, and smoothness.
+- The second principal component is primarily influenced by area and 
+  fractal.dimension;
+- The third principal component is dominated by texture;
+- Beyond the third dimension, the contributions of the features diminish. This 
+reduction is expected since the first three principal components account for
+85.12\% of the total variance.
 
-selected_features <- data %>%
-  select(radius_mean, texture_mean, smoothness_mean,
-         compactness_mean, concavity_mean,  symmetry_mean)
+### Prepare the selected data for the model
 
-# Standardize the data (excluding the diagnosis column)
-standardized_data <- scale(selected_features)
+As mentioned earlier, our goal is to predict whether a patient has cancer
+based on data obtained from a fine needle aspirate (FNA) of a breast mass exam.
 
-# Perform PCA
-pca_result <- prcomp(standardized_data, center = TRUE, scale. = TRUE)
+We will utilize the first four principal components from the PCA, given 
+their high explanatory power and the reduced set of features they represent.
 
-# Summary of PCA results
-summary(pca_result)
+Given that our _dependent variable is binary_ (indicating whether a patient
+has cancer or not) and we have multiple predictors (the first four principal
+components from PCA), the most appropriate method for analysis is
+_multivariate logistic regression_.
 
-# View the proportion of variance explained by each principal component
-pca_result$sdev^2 / sum(pca_result$sdev^2)
+This model will predict the probability of having cancer (the probability
+of diagnosis is malignant or value M).
 
-# Plot the variance explained by each principal component
-screeplot(pca_result, type = "lines", main = "Scree Plot")
+So our model will be the following one (Assumming the probability of a
+malignant cancer is $Y=1$):
+$$
+logit(P(Y = 1)) = \beta_0 + \beta_1PC1 + \beta_2PC2 + \beta_3PC3 + \beta_4PC4
+$$
 
+The hypotheses that we want to test with this model is if our model significant
+predict the cancer diagnosis:
+
+$$
+\begin{cases}
+H_0: \beta_1 = \beta_2 = \beta_3 = \beta_4 = 0 \\
+H_1: \exists i \in \{1,2,3,4\}: \beta_i \neq 0
+\end{cases}
+$$
+
+- The null hypothesis states that the first four principal components do not 
+significantly predict cancer diagnosis.
+- The alternative hypothesis states that the first four principal components
+do significantly predict cancer diagnosis.
+
+### Data preparation
+
+```{r, echo = TRUE}
+model_data <- as.data.frame(pca$x[, 1:4])
+model_data$diagnosis <- data$diagnosis
+
+kable(head(model_data), format = "latex", 
+      caption = "Model data first rows") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+str(model_data)
+
+levels(model_data$diagnosis)
 ```
 
+### Model
 
-### Target role
+
+
+### Model Resulta
 
 ### Hypotheses definition
 

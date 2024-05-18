@@ -6,10 +6,12 @@ output:
   pdf_document:
     toc: true
     toc_depth: 2
-
+    
 bibliography: references.bib
 biblio-style: "apa"
 ---
+
+
 
 ```{r child = 'sections/setup.Rmd'}
 ```
@@ -20,11 +22,13 @@ biblio-style: "apa"
 ```{r child = 'sections/introduction.Rmd'}
 ```
 
+
 ```{r child = 'sections/method.Rmd'}
 ```
 
-
 <!--
+
+
 ``{r child = 'sections/references.Rmd'}
 ``
 

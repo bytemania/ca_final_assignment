@@ -20,12 +20,20 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) {
   install.packages("ggplot2", repos ="http://cran.us.r-project.org")
 }
 
+if (!requireNamespace("cowplot", quietly = TRUE)) {
+  install.packages("cowplot", repos ="http://cran.us.r-project.org")
+}
+
 if (!requireNamespace("gridExtra", quietly = TRUE)) {
   install.packages("gridExtra", repos ="http://cran.us.r-project.org")
 }
 
 if (!requireNamespace("corrplot", quietly = TRUE)) {
   install.packages("corrplot", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("factoextra", quietly = TRUE)) {
+  install.packages("factoextra", repos ="http://cran.us.r-project.org")
 }
 
 library(knitr)
@@ -38,8 +46,11 @@ library(dplyr)
 
 library(ggplot2)
 library(gridExtra)
+library(cowplot)
 
 library(corrplot)
+library(factoextra)
+
 ```
 
 ```{r setup, include=FALSE} 
