@@ -2,3 +2,5 @@
 *html
 .RData
 .Rhistory
+*.log
+

@@ -1,1 +1,160 @@
-\section{Results}
+\clearpage
+
+# Results
+
+After applying the Logistic Regression algorithm and PCA for feature reduction, 
+we will discuss the model's performance and accuracy. The key metrics we will 
+analyze include the null hypothesis vs. alternative hypothesis deviance,
+log-likelihood, Akaike Information Criterion (AIC), confusion matrix, 
+and ROC curves.
+
+Comparing Null Deviance vs. Residual Deviance we assess how much the inclusion
+of predictors improves the model's fit. A significant reduction in deviance
+suggests that the predictors significantly contribute to explaining the 
+variability in the data.
+
+The log-likelihood helps us understand how well the model explains the observed 
+data. Higher log-likelihood values indicate a better fit of the model to the 
+data.
+
+AIC combines the log-likelihood of the model with a penalty for the number
+of parameters used. It helps in model selection by balancing model fit 
+and complexity. Lower AIC values indicate a better model, considering both 
+goodness of fit and model simplicity. AIC helps to avoid overfitting by
+penalizing models with too many predictors.
+
+The confusion matrix provides insights into the model’s accuracy, precision, 
+recall, and overall effectiveness in classifying instances correctly. It is 
+essential for understanding the types of errors the model is making.
+
+ROC Curve. It plots the 
+true positive rate (sensitivity) against the false positive 
+rate (1 - specificity).
+
+We will review the PCA process to understand how it reduces the dataset's 
+dimensionality by transforming original features into principal components.
+Additionally, we will identify and discuss the features that have the highest
+contributions to the principal components, providing insights into the 
+variables that most significantly influence the data's structure.
+
+## Model Performance
+
+```{r, echo = TRUE}
+summary(model_reduced)
+```
+Conclusions:
+
+- The intercept represents the log-odds of a malignant diagnosis when
+  all principal components are zero. 
+- PC1: Has a significant positive effect on the 
+  likelihood of a malignant diagnosis;
+- PC2: Has a significant negative effect on the 
+  likelihood of a malignant diagnosis;
+- PC3: Also has a significant negative effect on the 
+  likelihood of a malignant diagnosis.
+- The intercept has significance of 0.01128 and the Principal Components 
+  lower than 0.001 indicating that all components are strong predictors 
+  of cancer diagnosis.
+
+## Null deviance vs Residual Deviance 
+
+The significant reduction in deviance from the null model to the full model 
+indicates that the predictors greatly improve the model’s fit to the data.
+
+## AIC
+
+When we compare the AIC of the model using the three principal components to 
+the model using all four, we observe a slight decrease in AIC 
+from 190.19 to 189.22. This indicates that removing the 
+statistically insignificant component slightly improves
+the model's performance.
+
+## Likelihood ratio test
+
+```{r, echo = TRUE}
+lrtest(model_reduced)
+```
+
+The Likelihood ratio test compare the current model against the null model.
+The $\chi^2$ test has a value of 570.22 suggesting that our model (Model 1)
+explains the variability much better than the null model (Model 2).
+It also has a The p-value less than 2.2e-16 indicating that our model is
+statistically significant. The reduction in log-likelihood from -375.72 in 
+the null model to -90.61 in the our model indicates that the inclusion of 
+PC1, PC2, and PC3 substantially improves the model's fit.
+
+## Confusion Matrix
+
+```{r, echo = TRUE}
+predicted_probs <- predict(model_reduced, type = "response")
+predicted_classes <- ifelse(predicted_probs > 0.5, 1, 0)
+actual_classes <- ifelse(data$diagnosis == "M", 1, 0)
+
+confusion_matrix <- suppressWarnings(caret::confusionMatrix(factor(predicted_classes), 
+                                                            factor(actual_classes),
+                                                            positive = "1"))
+print(confusion_matrix)
+```
+
+The confusion matrix has the following format:
+
+|  []()                | []()                 |
+|----------------------|----------------------|
+| True Negatives (342) | False Negatives (25) |
+| False Positives (15) | True Positives (187) |
+
+Our model achieves an accuracy of 92.97%, demonstrating that the logistic
+regression model, which utilizes the first three principal components, is 
+highly effective in predicting cancer diagnosis.
+
+## ROC Curve and AUC
+
+```{r, echo = TRUE}
+roc_curve <- roc(actual_classes, fitted(model_reduced))
+roc_obj <- plot(roc_curve, main="ROC Curve for Cancer Prediction", col="blue", 
+     print.auc = T, control = 0, case = 1, direction = "<")
+roc_obj
+```
+
+The curve is close to the top-left corner, which indicates high sensitivity 
+and specificity, meaning the model performs very well in distinguishing 
+between malignant and benign cases.
+
+The AUC of 0.982 (closer to 1) indicates that the model has a high ability
+to distinguish between malignant and benign diagnoses. This means that the 
+model is highly effective at correctly classifying patients with and 
+without cancer.
+
+## Principal variables in PCA
+
+```{r, echo=TRUE}
+fviz_cos2(pca, choice = "var", axes=1:3)
+vars = get_pca_var(pca)
+corrplot(vars$cos2[, 1:3])
+fviz_eig(pca, addlabels = TRUE, ncp = 3)
+```
+
+We have three plots. The first plot shows the overall contribution of the 
+features to the three principal components combined. The second plot displays
+the contribution of each feature to each individual principal component.
+The last shows the explained variance per dimension.
+
+- For the PC1 the most important features were compactness, concavity 
+and smoothness;
+- PC2 area and fractal dimension;
+- PC3 texture.
+
+In terms of total of importance across all the components we have:
+
+- texture;
+- area;
+- compactness;
+- concavity.
+
+Variance explained per component
+
+- PC1: 50%;
+- PC2: 23.9%;
+- PC3: 11.2%
+
+COMMENT THE FALSE NEGATIVES 25 is bad how to improve

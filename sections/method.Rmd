@@ -1,3 +1,5 @@
+\clearpage
+
 # Method
 
 ## Participants
@@ -333,42 +335,47 @@ summary(model)
 
 suppressWarnings(stargazer(model, type="text"))
 ```
+By the model analysis we can conclude:
 
-### Model Results
+- The first three principal components (PC1, PC2, PC3) are significant 
+predictors of cancer diagnosis and should be considered important in the model;
+- The fourth principal component (PC4) does not significantly contribute to the
+prediction and might be excluded in a simplified model.
 
-Likelihood Ratio Test of Nested Models
+We can disregard the fourth component as it only accounts for 7% of the 
+total variance. By using the first three components, we can still explain 85% 
+of the variance, which is acceptable.
+
+Restating the the model hypothesis we have:
+
+Model:
+
+$$
+logit(P(Y = 1)) = \beta_0 + \beta_1PC1 + \beta_2PC2 + \beta_3PC3
+$$
+
+The hypothesis:
+
+$$
+\begin{cases}
+H_0: \beta_1 = \beta_2 = \beta_3 = 0 \\
+H_1: \exists i \in \{1,2,3\}: \beta_i \neq 0
+\end{cases}
+$$
+
+The new model is the following:
+
 ```{r, echo = TRUE}
-lrtest(model)
+model_data_reduced <- as.data.frame(pca$x[, 1:3])
+model_data_reduced$diagnosis <- ifelse(data$diagnosis == "M", 1, 0)
+model_reduced <- glm(diagnosis ~ ., data = model_data_reduced, family = binomial)
+suppressWarnings(stargazer(model_reduced, type="text"))
 ```
 
-confusion matrix
-93% accuracy
+Our final model is (Log-Odds Equation):
+$$
+logit(P(diagnosis = 1)) = -0.502 + 2.550 \times PC1 - 3.223 \times PC2 - 0.782 \times PC3
+$$
 
-```{r, echo = TRUE}
-predicted_probs <- predict(model, type = "response")
-predicted_classes <- ifelse(predicted_probs > 0.5, 1, 0)
-actual_classes <- ifelse(data$diagnosis == "M", 1, 0)
-
-confusion_matrix <- suppressWarnings(caret::confusionMatrix(factor(predicted_classes), factor(actual_classes), positive = "1"))
-print(confusion_matrix)
-```
-
-ROC Curve
-
-```{r, echo = TRUE}
-roc_curve <- roc(actual_classes, fitted(model))
-roc_obj <- plot(roc_curve, main="ROC Curve for Cancel Prediction", col="blue", 
-     print.auc = T, control = 0, case = 1, direction = "<")
-roc_obj
-```
-
-
-### Classification
-
-NEXT CHAPTER
-
-evaluation results
-
-conclusion
-
-
+The results and performance of the model will be discussed in the next 
+section.
