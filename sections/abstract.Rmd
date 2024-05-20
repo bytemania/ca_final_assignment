@@ -1,8 +1,7 @@
 # Abstract
 
 Breast cancer is the most common cancer in women in developed countries,
-and 12% of breast cancer occurs in women 20-34 
-yearscite[@Hickey09:bc].
+and 12% of breast cancer occurs in women 20-34 [@Hickey09:bc].
 
 Advancements in prediction and diagnosis are crucial for maintaining a healthy 
 life. Accurate cancer prediction mechanisms are vital for improving patient 
@@ -21,7 +20,7 @@ Additionally, we applied Logistic Regression to perform the prediction of the
 binary outcome (presence or absence of breast cancer). Logistic Regression 
 is well-suited for this task as it provides a clear probabilistic framework
 for binary classification problems. The dataset used for this analysis is the
-Breast Cancer Wisconsin (Diagnostic) datasetparencite[@UCI95:bc], 
+Breast Cancer Wisconsin (Diagnostic) dataset [@UCI95:bc], 
 a well-known dataset in the field of medical diagnostics. We conducted our
 analysis and reporting using _R Studio, specifically version 4.3.2, 
 released on October 31, 2023_.
