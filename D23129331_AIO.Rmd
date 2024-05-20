@@ -1,0 +1,758 @@
+---
+title: "MATH 9102 - Probability and Statistical Inference Assignment \\ Final Assignment"
+author: "Antonio Silva (D23129331@mytudublin.ie)"
+date: "2024-05-26"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 1
+    
+bibliography: references.bib
+biblio-style: "apa"
+---
+
+
+```{r, echo = FALSE, include = FALSE}
+if (!requireNamespace("knitr", quietly = TRUE)) {
+  install.packages("knitr", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("kableExtra", quietly = TRUE)) {
+  install.packages("kableExtra", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("cowplot", quietly = TRUE)) {
+  install.packages("cowplot", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("gridExtra", quietly = TRUE)) {
+  install.packages("gridExtra", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("corrplot", quietly = TRUE)) {
+  install.packages("corrplot", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("factoextra", quietly = TRUE)) {
+  install.packages("factoextra", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("stargazer", quietly = TRUE)) {
+  install.packages("stargazer", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("lmtest", quietly = TRUE)) {
+  install.packages("lmtest", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("caret", quietly = TRUE)) {
+  install.packages("caret", repos ="http://cran.us.r-project.org")
+}
+
+if (!requireNamespace("pROC", quietly = TRUE)) {
+  install.packages("pROC", repos ="http://cran.us.r-project.org")
+}
+
+
+library(knitr)
+library(kableExtra)
+
+library(psych)
+
+library(tidyverse)
+library(dplyr)
+
+library(ggplot2)
+library(gridExtra)
+library(cowplot)
+
+library(corrplot)
+library(factoextra)
+
+library(stargazer)
+library(lmtest)
+library(caret)
+library(pROC)
+```
+
+```{r setup, include=FALSE} 
+opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+# Abstract
+
+Breast cancer is the most common cancer in women in developed countries,
+and 12% of breast cancer occurs in women 20-34 
+yearscite[@Hickey09:bc].
+
+Advancements in prediction and diagnosis are crucial for maintaining a healthy 
+life. Accurate cancer prediction mechanisms are vital for improving patient 
+treatment and survival rates. Predictive techniques play a significant role 
+in the early diagnosis of breast cancer, allowing for timely intervention
+and better management of the disease. In this study, we focus on enhancing the
+accuracy of breast cancer predictions by employing advanced data analysis 
+techniques. Specifically, we utilized Principal Component Analysis (PCA) to 
+reduce the dataset's dimensionality. This step is essential as it helps to 
+simplify the dataset, making the predictive model more efficient and effective. 
+By reducing the number of variables, we can focus on the most significant 
+features that contribute to accurate predictions, thus improving the model's
+overall performance.
+
+Additionally, we applied Logistic Regression to perform the prediction of the
+binary outcome (presence or absence of breast cancer). Logistic Regression 
+is well-suited for this task as it provides a clear probabilistic framework
+for binary classification problems. The dataset used for this analysis is the
+Breast Cancer Wisconsin (Diagnostic) datasetparencite[@UCI95:bc], 
+a well-known dataset in the field of medical diagnostics. We conducted our
+analysis and reporting using _R Studio, specifically version 4.3.2, 
+released on October 31, 2023_.
+
+\clearpage
+
+# Introduction
+
+Advances in predictive analytics and diagnostic technologies are crucial for
+improving public health. Early detection and accurate diagnosis of diseases 
+like cancer significantly improve treatment outcomes and survival rates. Since 
+breast cancer is one of the most common cancers affecting women worldwide, 
+developing reliable prediction methods is essential. This study aims to
+explore advanced data analysis techniques to improve the accuracy of breast
+cancer diagnosis.
+
+Predicting breast cancer involves analyzing various physiological and
+pathological features that indicate malignant tumors. Traditional methods 
+often rely on clinical exams and imaging techniques, which, while 
+effective, can be enhanced by computational methods.
+
+Principal Component Analysis (PCA) is a useful tool for reducing the number of 
+variables in a dataset. By simplifying the data without losing important 
+information, PCA improves the performance of predictive models. In this study,
+we use PCA on the Breast Cancer Wisconsin (Diagnostic) dataset to streamline
+the features and improve the prediction model's efficiency. This step is 
+essential for handling high-dimensional data in medical diagnostics and ensures 
+that the model is robust and easy to interpret.
+
+Logistic Regression, a common method for binary classification, is used to 
+predict whether a tumor is malignant or benign. This technique is well-suited 
+for medical diagnostics because it provides probabilities and can handle 
+various predictor variables. By applying Logistic Regression to the 
+PCA-transformed dataset, we aim to achieve high accuracy in predicting breast
+cancer. Combining PCA and Logistic Regression offers a comprehensive approach 
+to addressing the complexity of breast cancer prediction.
+
+The dataset used in this study is the Breast Cancer Wisconsin (Diagnostic) 
+dataset, a well-known resource in medical research. This dataset includes 
+various features extracted from digitized images of fine needle aspirate (FNA) 
+of breast masses[@UCI95:bc], making it ideal for predictive analysis. We conducted the 
+analysis and reporting using _R Studio (version 4.3.2, released on 
+October 31, 2023)_, which provides a robust environment for statistical 
+computing and graphics. Through this study, we aim to enhance breast cancer 
+detection and improve patient outcomes, supporting the broader goal of 
+advancing healthcare through data-driven methods.
+
+\clearpage
+
+# Method
+
+## Participants
+
+The Breast Cancer Wisconsin (Diagnostic) dataset includes data from patients
+who underwent fine needle aspirate (FNA) of breast masses. 
+
+The dataset consists of 569 instances with data collected from real 
+women.
+
+The dataset does not provide personal demographic information such as 
+age, ethnicity, or geographic location, focusing instead on the clinical 
+and pathological features of the breast masses.
+
+For each participant, 30 features were extracted from the FNA samples. These 
+features describe the characteristics of the cell nuclei present in the samples.
+The features include measurements such as radius, texture, perimeter, area, 
+smoothness, compactness, concavity, concave points, symmetry, and fractal 
+dimension.
+These features were recorded for both the mean, standard error, and "worst" or 
+largest values across the samples.
+
+Each sample is labeled with a diagnosis indicating whether the breast mass is 
+benign (B) or malignant (M).
+This binary outcome is used to train and test predictive models aimed at 
+diagnosing breast cancer.
+
+## Procedure 
+
+### Dataset Exploration & Analysis 
+
+The dataset includes the following features (variables):
+We do not have any variables related to the individual, except for the ID. 
+There is a categorical variable indicating whether the tumor is benign or 
+malignant. All other variables are numerical, and for each, the mean, 
+standard error, and worst value were measured during the exam.
+
+| Variable | Type | Description | 
+| ---------|------|-------------|
+| id       | Ordinal | Number of the patient |
+| diagnosis | Categorical | M = malignant, B = benign |
+| radius | Continuous | Mean of distances from center to points on the perimeter |
+| texture| Continuous | Standard deviation of gray-scale values |
+| perimeter | Continuous | |
+| area | Continuous | |
+| smoothness | Continuous | Local variation in radius lenghts |
+| compactness | Continuous | (perimeter ^ 2 / area - 1)|
+| concavity | Continuous | Severity of concave portions of the contour |
+| symmetry | Continuous | |
+| fractal_dimension| Continuous | "Coastline approximation" - 1
+
+
+```{r, echo=TRUE}
+data <- read.csv("data.csv")
+desc_data <- data %>% select(-X, -id)
+desc_data <- suppressWarnings(describe(desc_data))
+desc_data <- desc_data %>% mutate(across(where(is.numeric), round, 2))
+kable(desc_data, format = "latex", 
+      caption = "Descriptive Analysis of the dataset") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+```
+The descriptive analysis shown in Table 2 reveals the following observations:
+
+* Most features exhibit some degree of right skewness, indicating that extreme 
+values on the higher side are common;
+* The standard errors are relatively low compared to the mean values,
+suggesting that the measurements are fairly consistent; 
+* `area` and `radius` show high variability, which may be significant in 
+distinguishing between benign and malignant tumors.
+
+The next tables summarizes the counts of benign and malignant cases in
+the dataset:
+ 
+ * Benign: There are 357 cases where the tumor is classified as benign;
+ * Malignant: There are 212 cases where the tumor is classified as malignant.
+ 
+This imbalance could affect the performance of predicting model, 
+making it biased towards the more frequent class.
+
+```{r, echo=TRUE}
+diagnosis_table <- table(data$diagnosis) 
+names(diagnosis_table) <- c("Benign", "Malignant")
+kable(diagnosis_table, format = "latex", 
+      caption = "Tumors dataset classification", 
+      col.names=c("Classification", "Frequency"))
+```
+
+
+```{r, echo=TRUE}
+data$diagnosis <- as.factor(data$diagnosis)
+
+plot_area <- ggplot(data, aes(x = diagnosis, y = area_mean, color = diagnosis)) +
+  geom_jitter(width = 0.2) + 
+  theme_minimal() +
+  labs(title = "Area vs Diagnosis",
+       x = "Diagnosis",
+       y = "Area") +
+  scale_color_manual(values = c("B" = "blue", "M" = "red"), name = "Diagnosis") + 
+  theme(legend.position="none")
+
+plot_radius <- ggplot(data, aes(x = diagnosis, y = radius_mean, color = diagnosis)) +
+  geom_jitter(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Radius vs Diagnosis",
+       x = "Diagnosis",
+       y = "Radius") +
+  scale_color_manual(values = c("B" = "blue", "M" = "red"), 
+                     name = "Diagnosis",
+                     labels = c("Benign", "Malignant"))
+
+grid.arrange(plot_area, plot_radius, ncol = 2)
+```
+
+Both area and radius are useful features for distinguishing between benign 
+and malignant tumors. The scatterplots show that malignant tumors tend to have 
+higher values for these features compared to benign tumors.
+
+In terms of data cleaning, there is no need to impute data as there are no
+missing values. Additionally, we do not need to address outliers because they
+are related to the diagnosis, and excluding them could negatively impact our 
+analysis.
+
+### Feature Selection
+
+Based on dataset we will select only the following variables.
+
+We will exclude all variables ending with `_se` and `_worst`. These variables 
+are highly correlated with their corresponding `_mean` values, reducing 
+their significance.
+
+For example: 
+
+* `area_worst` represents the _worst_ value for the area;
+* `area_se` represents the _standard error_ for the area;
+* `area_mean` represents the _mean_ for the area.
+
+So we believe that the `area_mean` is the most representative feature for the
+area.
+
+`diagnosis` will be our _dependent variable_.
+
+```{r, echo = TRUE}
+selected_features <- data %>% 
+  select(contains("_mean"))  %>%
+  rename_with(~ sub("_mean$", "", .))  %>%
+  rename_with(~ gsub("_", ".", .))
+ 
+corr_mt <- cor(selected_features)
+
+corr_mt_formatted <- as.data.frame(corr_mt) %>%
+  mutate(across(where(is.numeric), function(x){
+    n <- round(x, 2)
+    highly_correlated <- abs(x) > 0.9 
+    high_correlated <- abs(x) > 0.8
+    cell_spec(n,
+                 format = "latex",
+                 color = ifelse(highly_correlated, "red", 
+                                ifelse(high_correlated, "blue", "black")),
+                 bold = ifelse(highly_correlated | high_correlated, T, F))
+  }))
+  
+kable(corr_mt_formatted, format = "latex", escape = FALSE, 
+      caption = "Correlation Matrix for Selected Features") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+corrplot(corr_mt, type = "upper", 
+         title = "Correlation Matrix of Selected Features", 
+         mar = c(0, 0, 2, 0))
+```
+
+By the correlation matrix and plot we can conclude:
+
+* There is a _Very High Correlation_ (0.9+) between `area`, `perimeter` and `radius`;
+* There is also a _Very High Correlation_ (0.9+) between `concavity` and `concave.points`;
+* There is _High Correlation_ (0.8+) between `concavity`, `concave.points`, 
+`compactness`, `area`, `perimeter` and `radius`.
+
+Based on the previous correlation matrix we will discard all the
+features with correlation
+bigger than 0.9 between them. So we will:
+
+* Keep the feature `area` and discard `perimeter` and `radius`;
+* Keep the feature `concavity` and discard `concave.points`.
+
+Our final selected features are:
+
+* diagnosis (target/dependent variable);
+* area;
+* texture;
+* smoothness;
+* compactness;
+* concavity;
+* symmetry;
+* fractal.dimension.
+
+### PCA
+
+Before applying PCA, it is essential to select the predictor variables and 
+scale them. This step is important because PCA assumes that the data is 
+normally distributed and is sensitive to the variance of the
+variables. Standardizing the data ensures that each variable contributes
+equally to the analysis and that the results are not dominated by variables 
+with higher variance. 
+Luckily we can do it using the `center` and `scale.` parameter from the 
+`prcomp` (Principal Components Analysis) function.
+
+
+```{r, echo=TRUE}
+pca_selected <-  data %>% 
+  select(contains("_mean")) %>%
+  rename_with(~ sub("_mean$", "", .))  %>%
+  rename_with(~ gsub("_", ".", .)) %>%
+  select(-c("perimeter", "radius", "concave.points"))
+
+pca <- prcomp(pca_selected, center = TRUE, scale. = TRUE)
+
+pca_summary <- summary(pca)
+
+kable(pca_summary$importance, format = "latex", escape = FALSE, 
+      caption = "PCA Summary") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+eig.val <- get_eigenvalue(pca)
+kable(eig.val, format = "latex", escape = FALSE, 
+      caption = "Eigenvalues and variance") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+screeplot <- fviz_eig(pca, addlabels = TRUE)
+
+vars = get_pca_var(pca)
+corrplot(vars$cos2)
+
+
+top_feature_contributors <- fviz_cos2(pca, choice = "var", axes=1:4)
+
+eigenvectors <- fviz_pca_var(pca, col.var = "cos2", 
+             gradient.cols = c("red", "blue", "green"), 
+             repel = TRUE)
+
+eigenvectors
+plot_grid(screeplot, top_feature_contributors)
+```
+
+
+As we can see by the PCA Summary Table we saw that the first four components
+represents $\sim 92.2\%$ of the variance. is It a quite high value and we 
+reduce from 7 to 4 variables to use in our model later it's a $\sim 43\%$
+reduction of our initial features.
+
+The first four principal components together explain about 92.2\% of the total
+variance. This high percentage indicates that these components effectively
+summarize the majority of the variability in the dataset.
+
+Initially, we have 7 features. By using PCA, we 
+reduce this number to 4  principal components representing about 43\% decrease
+in the number of dimensions (features)
+$$
+Reduction\ Percentage = \frac{7 - 4}{7} = 0.4285714286 \approx 43.86\%
+$$
+
+Using fewer features (4 instead of 7) simplifies the model, making it
+easier to interpret and faster to compute retaining an high explanatory power.
+
+The eigenvectors and feature contributions plots reveal the following insights:
+
+- All features are positively correlated;
+- The most significant features for the first principal component are 
+compactness, concavity, symmetry, and smoothness.
+- The second principal component is primarily influenced by area and 
+  fractal.dimension;
+- The third principal component is dominated by texture;
+- Beyond the third dimension, the contributions of the features diminish. This 
+reduction is expected since the first three principal components account for
+85.12\% of the total variance.
+
+### Prepare the selected data for the model
+
+As mentioned earlier, our goal is to predict whether a patient has cancer
+based on data obtained from a fine needle aspirate (FNA) of a breast mass exam.
+
+We will utilize the first four principal components from the PCA, given 
+their high explanatory power and the reduced set of features they represent.
+
+Given that our _dependent variable is binary_ (indicating whether a patient
+has cancer or not) and we have multiple predictors (the first four principal
+components from PCA), the most appropriate method for analysis is
+_multivariate logistic regression_.
+
+This model will predict the probability of having cancer (the probability
+of diagnosis is malignant or value M).
+
+So our model will be the following one (Assumming the probability of a
+malignant cancer is $Y=1$):
+$$
+logit(P(Y = 1)) = \beta_0 + \beta_1PC1 + \beta_2PC2 + \beta_3PC3 + \beta_4PC4
+$$
+
+The hypotheses that we want to test with this model is if our model significant
+predict the cancer diagnosis:
+
+$$
+\begin{cases}
+H_0: \beta_1 = \beta_2 = \beta_3 = \beta_4 = 0 \\
+H_1: \exists i \in \{1,2,3,4\}: \beta_i \neq 0
+\end{cases}
+$$
+
+- The null hypothesis states that the first four principal components do not 
+significantly predict cancer diagnosis.
+- The alternative hypothesis states that the first four principal components
+do significantly predict cancer diagnosis.
+
+### Data preparation
+
+```{r, echo = TRUE}
+model_data <- as.data.frame(pca$x[, 1:4])
+model_data$diagnosis <- ifelse(data$diagnosis == "M", 1, 0)
+
+kable(head(model_data), format = "latex", 
+      caption = "Model data first rows") %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+str(model_data)
+
+levels(model_data$diagnosis)
+```
+
+### Model
+
+```{r, echo = TRUE}
+model <- glm(diagnosis ~ ., data = model_data, family = binomial)
+summary(model)
+
+suppressWarnings(stargazer(model, type="text"))
+```
+By the model analysis we can conclude:
+
+- The first three principal components (PC1, PC2, PC3) are significant 
+predictors of cancer diagnosis and should be considered important in the model;
+- The fourth principal component (PC4) does not significantly contribute to the
+prediction and might be excluded in a simplified model.
+
+We can disregard the fourth component as it only accounts for 7% of the 
+total variance. By using the first three components, we can still explain 85% 
+of the variance, which is acceptable.
+
+Restating the the model hypothesis we have:
+
+Model:
+
+$$
+logit(P(Y = 1)) = \beta_0 + \beta_1PC1 + \beta_2PC2 + \beta_3PC3
+$$
+
+The hypothesis:
+
+$$
+\begin{cases}
+H_0: \beta_1 = \beta_2 = \beta_3 = 0 \\
+H_1: \exists i \in \{1,2,3\}: \beta_i \neq 0
+\end{cases}
+$$
+
+The new model is the following:
+
+```{r, echo = TRUE}
+model_data_reduced <- as.data.frame(pca$x[, 1:3])
+model_data_reduced$diagnosis <- ifelse(data$diagnosis == "M", 1, 0)
+model_reduced <- glm(diagnosis ~ ., data = model_data_reduced, family = binomial)
+suppressWarnings(stargazer(model_reduced, type="text"))
+```
+
+Our final model is (Log-Odds Equation):
+$$
+logit(P(diagnosis = 1)) = -0.502 + 2.550 \times PC1 - 3.223 \times PC2 - 0.782 \times PC3
+$$
+
+The results and performance of the model will be discussed in the next 
+section.
+
+\clearpage
+
+# Results
+
+After applying the Logistic Regression algorithm and PCA for feature reduction, 
+we will discuss the model's performance and accuracy. The key metrics we will 
+analyze include the null hypothesis vs. alternative hypothesis deviance,
+log-likelihood, Akaike Information Criterion (AIC), confusion matrix, 
+and ROC curves.
+
+Comparing Null Deviance vs. Residual Deviance we assess how much the inclusion
+of predictors improves the model's fit. A significant reduction in deviance
+suggests that the predictors significantly contribute to explaining the 
+variability in the data.
+
+The log-likelihood helps us understand how well the model explains the observed 
+data. Higher log-likelihood values indicate a better fit of the model to the 
+data.
+
+AIC combines the log-likelihood of the model with a penalty for the number
+of parameters used. It helps in model selection by balancing model fit 
+and complexity. Lower AIC values indicate a better model, considering both 
+goodness of fit and model simplicity. AIC helps to avoid overfitting by
+penalizing models with too many predictors.
+
+The confusion matrix provides insights into the model’s accuracy, precision, 
+recall, and overall effectiveness in classifying instances correctly. It is 
+essential for understanding the types of errors the model is making.
+
+ROC Curve. It plots the 
+true positive rate (sensitivity) against the false positive 
+rate (1 - specificity).
+
+We will review the PCA process to understand how it reduces the dataset's 
+dimensionality by transforming original features into principal components.
+Additionally, we will identify and discuss the features that have the highest
+contributions to the principal components, providing insights into the 
+variables that most significantly influence the data's structure.
+
+## Model Performance
+
+```{r, echo = TRUE}
+summary(model_reduced)
+```
+Conclusions:
+
+- The intercept represents the log-odds of a malignant diagnosis when
+  all principal components are zero. 
+- PC1: Has a significant positive effect on the 
+  likelihood of a malignant diagnosis;
+- PC2: Has a significant negative effect on the 
+  likelihood of a malignant diagnosis;
+- PC3: Also has a significant negative effect on the 
+  likelihood of a malignant diagnosis.
+- The intercept has significance of 0.01128 and the Principal Components 
+  lower than 0.001 indicating that all components are strong predictors 
+  of cancer diagnosis.
+
+## Null deviance vs Residual Deviance 
+
+The significant reduction in deviance from the null model to the full model 
+indicates that the predictors greatly improve the model’s fit to the data.
+
+## AIC
+
+When we compare the AIC of the model using the three principal components to 
+the model using all four, we observe a slight decrease in AIC 
+from 190.19 to 189.22. This indicates that removing the 
+statistically insignificant component slightly improves
+the model's performance.
+
+## Likelihood ratio test
+
+```{r, echo = TRUE}
+lrtest(model_reduced)
+```
+
+The Likelihood ratio test compare the current model against the null model.
+The $\chi^2$ test has a value of 570.22 suggesting that our model (Model 1)
+explains the variability much better than the null model (Model 2).
+It also has a The p-value less than 2.2e-16 indicating that our model is
+statistically significant. The reduction in log-likelihood from -375.72 in 
+the null model to -90.61 in the our model indicates that the inclusion of 
+PC1, PC2, and PC3 substantially improves the model's fit.
+
+## Confusion Matrix
+
+```{r, echo = TRUE}
+predicted_probs <- predict(model_reduced, type = "response")
+predicted_classes <- ifelse(predicted_probs > 0.5, 1, 0)
+actual_classes <- ifelse(data$diagnosis == "M", 1, 0)
+
+confusion_matrix <- suppressWarnings(caret::confusionMatrix(factor(predicted_classes), 
+                                                            factor(actual_classes),
+                                                            positive = "1"))
+print(confusion_matrix)
+```
+
+The confusion matrix has the following format:
+
+|  []()                | []()                 |
+|----------------------|----------------------|
+| True Negatives (342) | False Negatives (25) |
+| False Positives (15) | True Positives (187) |
+
+Our model achieves an accuracy of 92.97%, demonstrating that the logistic
+regression model, which utilizes the first three principal components, is 
+highly effective in predicting cancer diagnosis.
+
+## ROC Curve and AUC
+
+```{r, echo = TRUE}
+roc_curve <- roc(actual_classes, fitted(model_reduced))
+roc_obj <- plot(roc_curve, main="ROC Curve for Cancer Prediction", col="blue", 
+     print.auc = T, control = 0, case = 1, direction = "<")
+roc_obj
+```
+
+The curve is close to the top-left corner, which indicates high sensitivity 
+and specificity, meaning the model performs very well in distinguishing 
+between malignant and benign cases.
+
+The AUC of 0.982 (closer to 1) indicates that the model has a high ability
+to distinguish between malignant and benign diagnoses. This means that the 
+model is highly effective at correctly classifying patients with and 
+without cancer.
+
+## Principal variables in PCA
+
+```{r, echo=TRUE}
+fviz_cos2(pca, choice = "var", axes=1:3)
+vars = get_pca_var(pca)
+corrplot(vars$cos2[, 1:3])
+fviz_eig(pca, addlabels = TRUE, ncp = 3)
+```
+
+We have three plots. The first plot shows the overall contribution of the 
+features to the three principal components combined. The second plot displays
+the contribution of each feature to each individual principal component.
+The last shows the explained variance per dimension.
+
+- For the PC1 the most important features were compactness, concavity 
+and smoothness;
+- PC2 area and fractal dimension;
+- PC3 texture.
+
+In terms of total of importance across all the components we have:
+
+- texture;
+- area;
+- compactness;
+- concavity.
+
+Variance explained per component
+
+- PC1: 50%;
+- PC2: 23.9%;
+- PC3: 11.2%
+
+\clearpage
+
+# Discussion
+
+In this study, we aimed to predict cancer diagnosis using a logistic regression
+model enhanced by Principal Component Analysis (PCA) to reduce 
+dimensionality. The key findings revealed that our model, utilizing the 
+first three principal components, achieved an impressive accuracy rate of 
+92.97%. This high accuracy indicates that the model is highly effective in 
+distinguishing between malignant and benign cases. 
+
+One concerning factor is that our model produced 25 false negatives. In our 
+dataset, this represents approximately 4.39% of the 
+cases ($\frac{25}{569} * 100 \approx 4.39 \%$). We can potentially reduce 
+the number of false negatives by increasing the size of the dataset or 
+incorporating additional variables into the model. Despite reducing the 
+number of predictors from 32 to 3, the model maintained its accuracy, 
+which is a significant improvement.
+
+The model's performance was further validated by a significant reduction 
+in the Akaike Information Criterion (AIC) from 190.19 to 189.22, 
+demonstrating that 
+eliminating the statistically insignificant fourth component improved 
+the model's performance.
+
+The ROC curve, with an Area Under the Curve (AUC) value of 0.982, underscores
+the model's excellent ability to discriminate between cancerous and
+non-cancerous diagnoses.
+
+These results support our original hypothesis that the first three principal
+components can significantly predict cancer diagnosis.
+
+Relating these findings back to our original predictions, the results 
+affirm the hypothesis that PCA can effectively reduce dimensionality without 
+sacrificing predictive accuracy.
+
+Our study has certain limitations. One potential weakness is that the dataset 
+used might not represent the full spectrum of patient variability
+seen in broader populations. 
+
+In conclusion, this study demonstrates that integrating PCA with logistic 
+regression is a highly effective method for predicting cancer diagnosis. The 
+model not only achieved high accuracy and excellent discriminative power but
+also provided valuable insights into the significance of various features. 
+These findings underscore the potential of data-driven methodologies to 
+enhance diagnostic accuracy and patient outcomes in medical practice. Future
+research building on these results can further advance the field of predictive
+analytics in healthcare, ultimately contributing to better health outcomes
+and more personalized treatment plans.
+
+\clearpage
+
+# References
