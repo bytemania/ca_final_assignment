@@ -1,3 +1,49 @@
 \clearpage
 
 # Discussion
+
+In this study, we aimed to predict cancer diagnosis using a logistic regression
+model enhanced by Principal Component Analysis (PCA) to reduce 
+dimensionality. The key findings revealed that our model, utilizing the 
+first three principal components, achieved an impressive accuracy rate of 
+92.97%. This high accuracy indicates that the model is highly effective in 
+distinguishing between malignant and benign cases. 
+
+One concerning factor is that our model produced 25 false negatives. In our 
+dataset, this represents approximately 4.39% of the 
+cases ($\frac{25}{569} * 100 \approx 4.39 \%$). We can potentially reduce 
+the number of false negatives by increasing the size of the dataset or 
+incorporating additional variables into the model. Despite reducing the 
+number of predictors from 32 to 3, the model maintained its accuracy, 
+which is a significant improvement.
+
+The model's performance was further validated by a significant reduction 
+in the Akaike Information Criterion (AIC) from 190.19 to 189.22, 
+demonstrating that 
+eliminating the statistically insignificant fourth component improved 
+the model's performance.
+
+The ROC curve, with an Area Under the Curve (AUC) value of 0.982, underscores
+the model's excellent ability to discriminate between cancerous and
+non-cancerous diagnoses.
+
+These results support our original hypothesis that the first three principal
+components can significantly predict cancer diagnosis.
+
+Relating these findings back to our original predictions, the results 
+affirm the hypothesis that PCA can effectively reduce dimensionality without 
+sacrificing predictive accuracy.
+
+Our study has certain limitations. One potential weakness is that the dataset 
+used might not represent the full spectrum of patient variability
+seen in broader populations. 
+
+In conclusion, this study demonstrates that integrating PCA with logistic 
+regression is a highly effective method for predicting cancer diagnosis. The 
+model not only achieved high accuracy and excellent discriminative power but
+also provided valuable insights into the significance of various features. 
+These findings underscore the potential of data-driven methodologies to 
+enhance diagnostic accuracy and patient outcomes in medical practice. Future
+research building on these results can further advance the field of predictive
+analytics in healthcare, ultimately contributing to better health outcomes
+and more personalized treatment plans.

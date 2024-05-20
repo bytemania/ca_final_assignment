@@ -40,5 +40,3 @@ October 31, 2023)_, which provides a robust environment for statistical
 computing and graphics. Through this study, we aim to enhance breast cancer 
 detection and improve patient outcomes, supporting the broader goal of 
 advancing healthcare through data-driven methods.
-
-

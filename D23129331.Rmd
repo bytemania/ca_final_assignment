@@ -31,13 +31,3 @@ biblio-style: "apa"
 
 ```{r child = 'sections/references.Rmd'}
 ```
-
-
-
-
-
-
-
-
-
-

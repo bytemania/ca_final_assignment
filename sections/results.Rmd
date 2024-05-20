@@ -156,5 +156,3 @@ Variance explained per component
 - PC1: 50%;
 - PC2: 23.9%;
 - PC3: 11.2%
-
-COMMENT THE FALSE NEGATIVES 25 is bad how to improve
